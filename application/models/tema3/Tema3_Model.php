@@ -1,5 +1,5 @@
 <?php
-class Productos_model extends CI_Model {
+class Tema3_Model extends CI_Model {
 
 //	Ejercicio 1
 	//	1. Realiza una función que devuelva todos los productos.
@@ -81,6 +81,7 @@ class Productos_model extends CI_Model {
 	// 9. Realiza una función que inserte 2 nuevos productos en la tabla productos.
 	// Los 2 productos deben de ser completamente distintos.
 	public function insertar_pedidos(array $pedidos) {
+		return;
 		return $this->db->insert_batch('PRODUCTO', $pedidos);
 	}
 
@@ -103,7 +104,7 @@ class Productos_model extends CI_Model {
 	}
 	public function get_productos($limit, $start) {
 		$this->db->join('CATEGORIA', 'PRODUCTO.FK_ID_CATEGORIA = CATEGORIA.PK_ID_CATEGORIA');
-		$this->db->select('PRODUCTO.NOMBRE, PRODUCTO.MARCA, CATEGORIA.NOMBRE as NOMBRE_CAT, PRODUCTO.CANTIDAD, PRODUCTO.PRECIO');
+		$this->db->select('PRODUCTO.PK_ID_PRODUCTO, PRODUCTO.NOMBRE, PRODUCTO.MARCA, CATEGORIA.NOMBRE as NOMBRE_CAT, PRODUCTO.CANTIDAD, PRODUCTO.PRECIO');
 		$this->db->limit($limit, $start);
 		$this->db->order_by('PRODUCTO.NOMBRE');
 		return $this->db->get('PRODUCTO')->result_array();

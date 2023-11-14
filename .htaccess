@@ -1,0 +1,26 @@
+Allow from all
+
+<IfModule mod_rewrite.c>
+
+     # allow_override On
+     # mod_rewrite is installed
+
+     AddDefaultCharset utf-8
+     php_value default_charset utf-8
+
+     RewriteEngine on
+
+     RewriteCond %{REQUEST_FILENAME} !-f
+     RewriteCond %{REQUEST_FILENAME} !-d
+
+     <IfModule mod_php5.c>
+         #RewriteRule ^admin/(.*)$ admin.php/$1 [L]
+         RewriteRule ^(.*)$ index.php/$1 [L]
+     </IfModule>
+
+     <IfModule !mod_php5.c>
+         #RewriteRule ^admin/(.*)$ admin.php?/$1 [L]
+         RewriteRule ^(.*)$ index.php?/$1 [L]
+     </IfModule>
+
+</IfModule>

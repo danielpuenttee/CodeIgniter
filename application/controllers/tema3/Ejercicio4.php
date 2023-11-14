@@ -7,14 +7,13 @@ class Ejercicio4 extends CI_Controller {
 	{
 		parent::__construct();
 
-		//		El modelo es reutilizado para evitar duplicacion de codigo.
-		$this->load->model("Productos_model");
 		$this->load->helper("form");
+		$this->load->library('form_validation');
 	}
 
 	public function index()
 	{
 		$datos['random_number'] = random_int(0, 999);
-		$this->load->view('ejercicio4.php', $datos);
+		$this->load->view('tema3/ejercicio4.php', $datos);
 	}
 }

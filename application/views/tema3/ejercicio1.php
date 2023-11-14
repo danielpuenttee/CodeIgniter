@@ -191,29 +191,33 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 	<div id="ap9">
 		<h2>Apartado 9</h2>
-		<p>Los pedidos:</p>
-		<table class="table" style="text-align: center">
-			<thead>
-			<th>Nombre</th>
-			<th>Marca</th>
-			<th>Categoria ID</th>
-			<th>Cantidad</th>
-			<th>Precio</th>
-			</thead>
+		<?php if (empty($pedidos)): ?>
+			<?= 'No se ha insertado ningún pedido' ?>
+		<?php else: ?>
+			<p>Los pedidos:</p>
+			<table class="table" style="text-align: center">
+				<thead>
+				<th>Nombre</th>
+				<th>Marca</th>
+				<th>Categoria ID</th>
+				<th>Cantidad</th>
+				<th>Precio</th>
+				</thead>
 
-			<tbody>
-			<?php foreach ($apartado9 as $key => $producto) : ?>
-				<tr>
-					<td><?= $producto['NOMBRE'] ?></td>
-					<td><?= $producto['MARCA'] ?></td>
-					<td><?= $producto['FK_ID_CATEGORIA'] ?></td>
-					<td><?= $producto['CANTIDAD'] ?></td>
-					<td><?= $producto['PRECIO'] ?></td>
-				</tr>
-			<?php endforeach; ?>
-			</tbody>
-		</table>
-		<p>han sido creados e insertados en la base de datos.</p>
+				<tbody>
+				<?php foreach ($apartado9 as $key => $producto) : ?>
+					<tr>
+						<td><?= $producto['NOMBRE'] ?></td>
+						<td><?= $producto['MARCA'] ?></td>
+						<td><?= $producto['FK_ID_CATEGORIA'] ?></td>
+						<td><?= $producto['CANTIDAD'] ?></td>
+						<td><?= $producto['PRECIO'] ?></td>
+					</tr>
+				<?php endforeach; ?>
+				</tbody>
+			</table>
+			<p>han sido creados e insertados en la base de datos.</p>
+		<?php endif; ?>
 	</div>
 
 
