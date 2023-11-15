@@ -5,7 +5,6 @@ class Productos extends CI_Controller {
 
 	public function __construct()
 	{
-		session_start();
 
 		parent::__construct();
 
@@ -17,6 +16,42 @@ class Productos extends CI_Controller {
 		$this->load->library('table');
 		$this->load->library('pagination');
 		$this->load->library('form_validation');
+		$this->load->library('session');
+
+		if(!isset($_SESSION)) session_start();
+	}
+
+	public function index()
+	{
+		$config = array();
+		$config["base_url"] = '/codeigniter/tema4/productos/index/';
+		$config["total_rows"] = $this->Productos_Model->productos_totales();
+		$config["per_page"] = 3;
+
+		$this->pagination->initialize($config);
+
+		if($this->uri->segment(4) === 'cancelar') {
+			if(isset($this->session->PAGINA)) header('Location: /codeigniter/tema4/productos/index/' . $this->session->PAGINA);
+			else header('Location: /codeigniter/tema4/productos/index/');
+		}
+
+		$offset = ($this->uri->segment(4)) ? (int) $this->uri->segment(4) : 0;
+		$pagina = $offset / $config["per_page"] + 1;
+
+		$this->session->set_userdata(array('PAGINA' => $offset));
+		$total_paginas = (int)ceil($config["total_rows"] / $config["per_page"]);
+
+		$data['paginacion'] = [
+			"LIMIT" => $config["per_page"],
+			"OFFSET" => $offset,
+			"PAGINA" => $pagina,
+			"OFFSET_PAGINA" => $pagina !== 0 ? ($pagina - 1) * $config["per_page"] : 0,
+			"TOTAL" => (int) $config["total_rows"],
+			"TOTAL_PAGINAS" => $total_paginas
+		];
+		$data['productos'] = $this->Productos_Model->get_productos($config["per_page"], $offset);
+
+		$this->load->view('tema4/listado.php', $data);
 	}
 
 	public function guardado_ok()
@@ -72,9 +107,12 @@ class Productos extends CI_Controller {
 		$this->load->view('tema4/ficha.php', $data);
 	}
 
-	public function ficha(int $id_producto)
+	public function ficha(int $id_producto = NULL)
 	{
-		if(!is_int($id_producto)) http_response_code(404);
+		if(is_null($id_producto)) {
+			http_response_code(404);
+			exit;
+		}
 
 		$data['categorias'] = $this->Productos_Model->categorias();
 		$producto = $this->Productos_Model->producto_por_id($id_producto);
@@ -83,41 +121,5 @@ class Productos extends CI_Controller {
 
 		$data['producto'] = $producto[0];
  		$this->load->view('tema4/ficha', $data);
-	}
-
-	public function index()
-	{
-		$config = array();
-		$config["base_url"] = '/codeigniter/tema4/productos/index/';
-		$config["total_rows"] = $this->Productos_Model->productos_totales();
-		$config["per_page"] = 3;
-
-		$this->pagination->initialize($config);
-
-		if($this->uri->segment(4) === 'cancelar') {
-			if(isset($_SESSION['PAGINA'])) header('Location: /codeigniter/tema4/productos/index/' . $_SESSION['PAGINA']);
-			else header('Location: /codeigniter/tema4/productos/index/');
-		}
-
-		$offset = ($this->uri->segment(4)) ? (int) $this->uri->segment(4) : 0;
-		$pagina = $offset / $config["per_page"] + 1;
-
-		$_SESSION['PAGINA'] = $offset;
-		$total_paginas = (int)ceil($config["total_rows"] / $config["per_page"]);
-
-		$data['paginacion'] = [
-			"LIMIT" => $config["per_page"],
-			"OFFSET" => $offset,
-			"PAGINA" => $pagina,
-			"OFFSET_PAGINA" => $pagina !== 0 ? ($pagina - 1) * $config["per_page"] : 0,
-			"TOTAL" => (int) $config["total_rows"],
-			"TOTAL_PAGINAS" => $total_paginas
-		];
-
-
-		$data['links'] = $this->pagination->create_links();
-		$data['productos'] = $this->Productos_Model->get_productos($config["per_page"], $offset);
-
-		$this->load->view('tema4/listado.php', $data);
 	}
 }

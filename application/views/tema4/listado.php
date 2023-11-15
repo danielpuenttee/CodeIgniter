@@ -25,9 +25,7 @@
 		);
 
 		$this->table->set_template($template);
-
 		echo $this->table->generate($productos);
-
 	endif;
 ?>
 </div>
@@ -35,16 +33,19 @@
 <br>
 
 <div id="links">
-	<?= $links ?>
+	<?php
+		$links = $this->pagination->create_links();
+		echo $links;
+	?>
 	<br>
 	<?php
-		if ($paginacion['TOTAL'] === 0):
+		if (count($productos) === 0):
 			echo 'No hay productos que mostrar';
 		else:
-			if ($paginacion['TOTAL'] !== 1):
+			if (count($productos) !== 1):
 				echo "Mostrando productos ";
 				echo $paginacion['TOTAL_PAGINAS'] === 0 ? '0' : (int)$paginacion['OFFSET'] + 1;
-				echo " a ";
+				echo " al ";
 				echo $paginacion['LIMIT'] + $paginacion['OFFSET_PAGINA'] < $paginacion['TOTAL'] ?
 					$paginacion['LIMIT'] + $paginacion['OFFSET_PAGINA'] : $paginacion['TOTAL'];
 			else:
