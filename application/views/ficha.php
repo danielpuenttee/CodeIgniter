@@ -1,13 +1,11 @@
 <h2>Ficha de Producto</h2>
 
 <div id="ficha">
-	<?= form_open('../tema4/productos/guardar'); ?>
-
-
+	<?= form_open('../productos/guardar'); ?>
 
 	<div id="id">
 		<?php
-			echo form_open('../tema4/productos/index');
+			echo form_open('../productos/index');
 			$submit_attributes = array(
 				'name' => 'intId',
 				'id' => 'intId',
@@ -154,7 +152,7 @@
 <?php if(!is_null($producto)): ?>
 	<div id="eliminar">
 		<?php
-		echo form_open('../tema4/productos/eliminar');
+		echo form_open('../productos/eliminar');
 		$submit_attributes = array(
 			'name' => 'intId',
 			'id' => 'intId',
@@ -180,7 +178,7 @@
 
 <div id="Cancelar">
 	<?php
-		echo form_open('../tema4/productos/index/cancelar');
+		echo form_open('../productos/index/cancelar');
 		$submit_attributes = array(
 			'name' => 'btCancel',
 			'id' => 'btCancel',

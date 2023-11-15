@@ -8,10 +8,11 @@ class Productos extends CI_Controller {
 
 		parent::__construct();
 
-		$this->load->model("tema4/Productos_Model");
+		$this->load->model("Productos_Model");
 
 		$this->load->helper("form");
 		$this->load->helper('url');
+		$this->load->helper('string_helper');
 
 		$this->load->library('table');
 		$this->load->library('pagination');
@@ -23,19 +24,23 @@ class Productos extends CI_Controller {
 
 	public function index()
 	{
-		$config = array();
-		$config["base_url"] = '/codeigniter/tema4/productos/index/';
-		$config["total_rows"] = $this->Productos_Model->productos_totales();
-		$config["per_page"] = 3;
+		var_dump($_POST);
 
+		$config = array();
+		$config["base_url"] = '/codeigniter/productos/index/';
+		$config["total_rows"] = $this->Productos_Model->productos_totales();
+
+		$this->session->PROD_PAGINA = (int) ($this->input->post('productos_por_pagina') ?? $this->session->PROD_PAGINA);
+
+		$config["per_page"] = $this->session->PROD_PAGINA;
 		$this->pagination->initialize($config);
 
 		if($this->uri->segment(4) === 'cancelar') {
-			if(isset($this->session->PAGINA)) header('Location: /codeigniter/tema4/productos/index/' . $this->session->PAGINA);
-			else header('Location: /codeigniter/tema4/productos/index/');
+			if(isset($this->session->PAGINA)) header('Location: /codeigniter/productos/index/' . $this->session->PAGINA);
+			else header('Location: /codeigniter/productos/index/');
 		}
 
-		$offset = ($this->uri->segment(4)) ? (int) $this->uri->segment(4) : 0;
+		$offset = ($this->uri->segment(3)) ? (int) $this->uri->segment(3) : 0;
 		$pagina = $offset / $config["per_page"] + 1;
 
 		$this->session->set_userdata(array('PAGINA' => $offset));
@@ -51,7 +56,7 @@ class Productos extends CI_Controller {
 		];
 		$data['productos'] = $this->Productos_Model->get_productos($config["per_page"], $offset);
 
-		$this->load->view('tema4/listado.php', $data);
+		$this->load->view('listado.php', $data);
 	}
 
 	public function guardado_ok()
@@ -104,7 +109,7 @@ class Productos extends CI_Controller {
 		$data['categorias'] = $this->Productos_Model->categorias();
 		$data['producto'] = null;
 		$data['errores'] = $this->form_validation->error_array();
-		$this->load->view('tema4/ficha.php', $data);
+		$this->load->view('ficha.php', $data);
 	}
 
 	public function ficha(int $id_producto = NULL)
@@ -120,6 +125,6 @@ class Productos extends CI_Controller {
 		if(empty($producto)) http_response_code(404);
 
 		$data['producto'] = $producto[0];
- 		$this->load->view('tema4/ficha', $data);
+ 		$this->load->view('ficha', $data);
 	}
 }

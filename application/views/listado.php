@@ -4,18 +4,23 @@
 <?php
 	if($paginacion['TOTAL'] === 0): echo 'No hay pedidos que mostrar';
 	else:
+		$a = rand(0, count($productos) -1);
+		$productos[$a]['FECHA'] = anchor(site_url('../productos/ficha/' . $productos[$a]['PK_ID_PRODUCTO']), alt_text('0000-00-00'));
+
+		$b = rand(0, count($productos) -1);
+		$productos[$b]['MARCA'] = anchor(site_url('../productos/ficha/' . $productos[$a]['PK_ID_PRODUCTO']), alt_text(null));
 		foreach ($productos as $key => &$producto) {
 			// Modifica cada campo del producto para convertirlo en un enlace
-			$producto['NOMBRE'] = anchor(site_url('../tema4/productos/ficha/' . $producto['PK_ID_PRODUCTO']), $producto['NOMBRE']);
-			$producto['MARCA'] = anchor(site_url('../tema4/productos/ficha/' . $producto['PK_ID_PRODUCTO']), is_null($producto['MARCA']) ? '-' : $producto['MARCA']);
-			$producto['NOMBRE_CAT'] = anchor(site_url('../tema4/productos/ficha/' . $producto['PK_ID_PRODUCTO']), $producto['NOMBRE_CAT']);
-			$producto['CANTIDAD'] = anchor(site_url('../tema4/productos/ficha/' . $producto['PK_ID_PRODUCTO']), $producto['CANTIDAD']);
-			$producto['PRECIO'] = anchor(site_url('../tema4/productos/ficha/' . $producto['PK_ID_PRODUCTO']), $producto['PRECIO']);
-
+			$producto['NOMBRE'] = anchor(site_url('../productos/ficha/' . $producto['PK_ID_PRODUCTO']), $producto['NOMBRE']);
+			$producto['MARCA'] = anchor(site_url('../productos/ficha/' . $producto['PK_ID_PRODUCTO']), alt_text($producto['MARCA']));
+			$producto['NOMBRE_CAT'] = anchor(site_url('../productos/ficha/' . $producto['PK_ID_PRODUCTO']), $producto['NOMBRE_CAT']);
+			$producto['CANTIDAD'] = anchor(site_url('../productos/ficha/' . $producto['PK_ID_PRODUCTO']), $producto['CANTIDAD']);
+			$producto['PRECIO'] = anchor(site_url('../productos/ficha/' . $producto['PK_ID_PRODUCTO']), $producto['PRECIO']);
+			if(!isset($producto['FECHA'])) $producto['FECHA'] = date('Y-m-d', time());
 			unset($producto['PK_ID_PRODUCTO']);
 		}
 
-		$this->table->set_heading('Nombre', 'Marca', 'Categoria', 'Cantidad', 'Precio');
+		$this->table->set_heading('Nombre', 'Marca', 'Categoria', 'Cantidad', 'Precio', 'Fecha');
 		$template = array(
 			'table_open' => '<table style="border: 3px solid black; text-align: center">',
 			'heading_cell_start' => '<th style="border: 2px solid black">',
@@ -58,9 +63,19 @@
 <br>
 <br>
 
+<div id="dropdown">
+	<?php
+		echo form_open('productos/index', array('id' => 'miFormulario', 'method' => 'post'));
+		echo form_dropdown_num_records('productos_por_pagina', $paginacion['LIMIT'], 'miFormulario');
+		echo form_close();
+	?>
+</div>
+<br>
+<br>
+
 <div id="Nuevo pedido">
 	<?php
-		echo form_open('../tema4/productos/ficha_nueva', 'get');
+		echo form_open('../productos/ficha_nueva', 'get');
 		$submit_attributes = array(
 			'name' => 'btSubmit',
 			'id' => 'btSubmit',
