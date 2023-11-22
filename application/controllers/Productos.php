@@ -20,11 +20,12 @@ class Productos extends CI_Controller {
 		$this->load->library('session');
 
 		if(!isset($_SESSION)) session_start();
+		$this->session->set_userdata(array('PROD_PAGINA' => 5));
 	}
 
 	public function index()
 	{
-		var_dump($_POST);
+		if($this->session->PROD_PAGINA === 5 || is_null($this->input->post('productos_por_pagina'))) $this->session->PROD_PAGINA = 5;
 
 		$config = array();
 		$config["base_url"] = '/codeigniter/productos/index/';
@@ -35,7 +36,7 @@ class Productos extends CI_Controller {
 		$config["per_page"] = $this->session->PROD_PAGINA;
 		$this->pagination->initialize($config);
 
-		if($this->uri->segment(4) === 'cancelar') {
+		if($this->uri->segment(3) === 'cancelar') {
 			if(isset($this->session->PAGINA)) header('Location: /codeigniter/productos/index/' . $this->session->PAGINA);
 			else header('Location: /codeigniter/productos/index/');
 		}
