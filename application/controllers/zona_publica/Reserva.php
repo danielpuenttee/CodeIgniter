@@ -21,7 +21,7 @@ class Reserva extends CI_Controller {
         if(!isset($_SESSION)) session_start();
     }
 
-    public function index(int $id_vehiculo, array $mensajes = array('fecha' => ''))
+    public function index(int $id_vehiculo, $errores = array('validation_errors' => array('fecha' => '')))
     {
         $vehiculo = $this->Usuario_model->vehiculo_por_id($id_vehiculo);
         if(empty($vehiculo)) http_response_code(404);
@@ -37,7 +37,8 @@ class Reserva extends CI_Controller {
         $data['vehiculo'] = $vehiculo;
         $data['reservas'] = $reservas;
         $data['empleados'] = $empleados;
-        $data['mensajes'] = $mensajes;
+        $data['validation_errors'] = $errores['validation_errors'];
+
         $this->load->view('zona_publica/reserva', $data);
     }
 
@@ -54,11 +55,6 @@ class Reserva extends CI_Controller {
         $resto_fechas = $this->Usuario_model->get_fechas($id_vehiculo);
         $fecha_valida = $this->chequear_fecha($desde, $hasta, $resto_fechas);
 
-        $mensajes = array('fecha' => '');
-        if(!$fecha_valida){
-            if ($desde >= $hasta) $mensajes['fecha'] = "La fecha de inicio no puede ser mayor que la de final";
-            else $mensajes['fecha'] = "Ya hay otra reserva asignada en este intervalo.";
-        }
         if($this->form_validation->run()) {
             $id_empleado = (int)$this->input->post('selEmpleado');
 
@@ -70,18 +66,18 @@ class Reserva extends CI_Controller {
                     'FK_ID_EMPLEADO' => $id_empleado,
                     'FK_ESTADO' => 1,
                 ));
-                $mensajes['dtDesde'] = '';
 
                 header('Location: ../ficha/index/' . $id_vehiculo);
                 exit();
             }
         }
-        $this->index($id_vehiculo, $mensajes);
+        $this->index($id_vehiculo, $this->data);
     }
 
     public function chequear_fecha($desde, $hasta, $resto_fechas)
     {
         if($desde >= $hasta) {
+            $this->data['validation_errors']['fecha'] = "La fecha de inicio no puede ser mayor que la de final";
             return false;
         }
         foreach ($resto_fechas as $intervalo) {
@@ -89,9 +85,11 @@ class Reserva extends CI_Controller {
             $otro_hasta = strtotime($intervalo['HASTA']);
 
             if (!(($desde >= $otro_hasta) || ($hasta <= $otro_desde))) {
+                $this->data['validation_errors']['fecha'] = "Ya hay otra reserva asignada en este intervalo.";
                 return false;
             }
         }
+        $this->data['validation_errors']['fecha'] = "";
         return true;
     }
 

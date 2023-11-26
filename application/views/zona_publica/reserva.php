@@ -1,4 +1,4 @@
-<h2>Nueva reserva para el vehiculo <?= $vehiculo['MATRICULA'] ?></h2>
+<h2>Nueva reserva - <?= $vehiculo['MATRICULA'] ?></h2>
 
 <div id="ficha">
     <?= form_open('zona_publica/reserva/guardar'); ?>
@@ -84,7 +84,6 @@
         ?>
     </div>
     <br>
-    <br>
 
     <div id="reserva">
         <h3>Datos de reserva</h3>
@@ -105,10 +104,8 @@
         <br>
 
         <div id="desde">
+            <?php if (isset($validation_errors['fecha'])) ?><p style="color: red"> <?= $validation_errors['fecha']; ?> </p>
             <?php
-            echo form_error('dtDesde', '<p style=color:red>', '</p>');
-            if(!is_null($mensajes)) echo '<p style="color: red">' . $mensajes['fecha'] . '</p>';
-
             $atributos = array(
                 'name' => 'dtDesde',
                 'id' => 'dtDesde',
