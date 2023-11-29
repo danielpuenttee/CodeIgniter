@@ -7,7 +7,7 @@ class Listado extends CI_Controller {
     {
         parent::__construct();
 
-        $this->load->model("Usuario_model");
+        $this->load->model("ZonaPublica_model");
 
         $this->load->helper("form");
         $this->load->helper('url');
@@ -26,27 +26,27 @@ class Listado extends CI_Controller {
             'MARCA' => '',
             'MODELO' => '',
             'MATRICULA' => '',
+            'UBICACION' => '',
             'ORDER_BY' => 'MARCA',
             'ORDER_DIR' => 'ASC'
         );
-
-        if(!isset($this->session->FILTROS)) $this->session->set_userdata(array('FILTROS' => $filtros));
+        if(!isset($this->session->FILTROS_PUBLICO)) $this->session->set_userdata(array('FILTROS_PUBLICO' => $filtros));
         if(!isset($this->session->OFFSET)) $this->session->set_userdata(array('OFFSET' => 0));
 
         $marcas = array('' => '-');
-        $marcas = array_merge($marcas, $this->Usuario_model->get_marcas());
+        $marcas = array_merge($marcas, $this->ZonaPublica_model->get_marcas());
         $this->session->MARCAS = $marcas;
     }
 
-    public function index()
-    {
-        if(!is_null($this->input->post('productos_por_pagina'))) {
-            $this->session->PROD_PAGINA = $this->input->post('productos_por_pagina');
-        }
+    public function index() {
+        self::listado();
+    }
 
+    public function listado()
+    {
         $config = array();
-        $config["base_url"] = '/codeigniter/zona_publica/listado/index';
-        $config["total_rows"] = $this->Usuario_model->vehiculos_totales($this->session->FILTROS);
+        $config["base_url"] = '/codeigniter/zona_publica/listado/listado';
+        $config["total_rows"] = $this->ZonaPublica_model->vehiculos_totales($this->session->FILTROS_PUBLICO);
 
         $this->session->PROD_PAGINA = (int) ($this->input->post('productos_por_pagina') ?? $this->session->PROD_PAGINA);
 
@@ -54,8 +54,8 @@ class Listado extends CI_Controller {
         $this->pagination->initialize($config);
 
         if($this->uri->segment(4) === 'volver') {
-            if(isset($this->session->OFFSET)) header('Location: /codeigniter/zona_publica/listado/index/' . $this->session->OFFSET);
-            else header('Location: /codeigniter/zona_publica/listado/index');
+            if(isset($this->session->OFFSET)) header('Location: /codeigniter/zona_publica/listado/listado/' . $this->session->OFFSET);
+            else header('Location: /codeigniter/zona_publica/listado/listado');
         }
 
         $offset = ($this->uri->segment(4)) ? (int) $this->uri->segment(4) : 0;
@@ -73,18 +73,24 @@ class Listado extends CI_Controller {
             "TOTAL_PAGINAS" => $total_paginas
         );
 
-        $vehiculos = $this->Usuario_model->get_vehiculos($config["per_page"], $offset, $this->session->FILTROS);
+        $vehiculos = $this->ZonaPublica_model->get_vehiculos($config["per_page"], $offset, $this->session->FILTROS_PUBLICO);
+        $existe_foto = false;
         foreach ($vehiculos as $key => &$vehiculo) {
-            $vehiculo['MARCA'] = anchor(site_url('zona_publica/ficha/index/' . $vehiculo['PK_ID_VEHICULO']), $vehiculo['MARCA']);
-            $vehiculo['MODELO'] = anchor(site_url('zona_publica/ficha/index/' . $vehiculo['PK_ID_VEHICULO']), $vehiculo['MODELO']);
-            $vehiculo['MATRICULA'] = anchor(site_url('zona_publica/ficha/index/' . $vehiculo['PK_ID_VEHICULO']), $vehiculo['MATRICULA']);
-            $vehiculo['UBICACION'] = anchor(site_url('zona_publica/ficha/index/' . $vehiculo['PK_ID_VEHICULO']), $vehiculo['UBICACION']);
+            $vehiculo['MARCA'] = anchor(site_url('zona_publica/ficha/ficha/' . $vehiculo['PK_ID_VEHICULO']), $vehiculo['MARCA']);
+            $vehiculo['MODELO'] = anchor(site_url('zona_publica/ficha/ficha/' . $vehiculo['PK_ID_VEHICULO']), $vehiculo['MODELO']);
+            $vehiculo['MATRICULA'] = anchor(site_url('zona_publica/ficha/ficha/' . $vehiculo['PK_ID_VEHICULO']), $vehiculo['MATRICULA']);
+            $vehiculo['UBICACION'] = anchor(site_url('zona_publica/ficha/ficha/' . $vehiculo['PK_ID_VEHICULO']), $vehiculo['UBICACION']);
 
+            if(!is_null($vehiculo['RENOMBRADO'])) {
+                $vehiculo['RENOMBRADO'] = '<img style="max-width:200px; max-height:200px;" src="/codeigniter/imagenes/vehiculos/' . $vehiculo['RENOMBRADO'] . '">';
+                $existe_foto = true;
+            } else unset($vehiculo['RENOMBRADO']);
             unset($vehiculo['PK_ID_VEHICULO']);
         }
         $data['vehiculos'] = $vehiculos;
+        $data['existe_foto'] = $existe_foto;
 
-        $data['filtros'] = $this->session->FILTROS;
+        $data['filtros'] = $this->session->FILTROS_PUBLICO;
         $data['marcas'] = $this->session->MARCAS;
 
         $this->load->view('zona_publica/listado', $data);
@@ -99,15 +105,29 @@ class Listado extends CI_Controller {
 
         if(!$this->form_validation->run()) $this->index();
         else {
-            $filtros = $this->session->FILTROS;
+            $filtros = $this->session->FILTROS_PUBLICO;
             $filtros['MARCA'] = $this->input->post('selMarca');
             $filtros['MODELO'] = $this->input->post('txModelo');
             $filtros['MATRICULA'] = $this->input->post('txMatricula');
+            $filtros['UBICACION'] = $this->input->post('txUbicacion');
+
             $filtros['ORDER_BY'] = $this->input->post('order_by');
             $filtros['ORDER_DIR'] = $this->input->post('order_dir');
-            $this->session->FILTROS = $filtros;
+            $this->session->FILTROS_PUBLICO = $filtros;
 
-            $this->index();
+            $this->listado();
         }
+    }
+
+    public function resetear() {
+        $this->session->FILTROS_PUBLICO = array(
+            'MARCA' => '',
+            'MODELO' => '',
+            'MATRICULA' => '',
+            'UBICACION' => '',
+            'ORDER_BY' => 'MARCA',
+            'ORDER_DIR' => 'ASC'
+        );
+        $this->listado();
     }
 }

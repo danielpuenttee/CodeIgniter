@@ -1,7 +1,20 @@
-<h2>Ficha del Vehiculo <?= $vehiculo['MATRICULA'] ?></h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Ficha publica vehiculo</title>
+    <meta name="description" content="Latest updates and statistic charts">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+</head>
+
+<body>
+<div id="titulo">
+    <h1>Talleres Guzmán S.L.</h1>
+    <h2>Ficha del Vehiculo <?= $vehiculo['MATRICULA'] ?></h2>
+</div>
 
 <div id="ficha">
-	<?= form_open('zona_publica/listado/index/volver'); ?>
+	<?= form_open('zona_publica/listado/listado/volver'); ?>
 
 	<div id="id">
 		<?php
@@ -19,11 +32,6 @@
 
 	<div id="matricula">
 		<?php
-//		echo form_error('selMarca', '<p style=color:red>', '</p>');
-
-//		$value = '';
-//		if(!is_null($vehiculo)) $value = $vehiculo['MARCA'];
-//		if(!empty(validation_errors())) $value = set_value('txMarca');
 		$marca_attributes = array(
 			'name' => 'txMatricula',
 			'id' => 'txMatricula',
@@ -40,20 +48,9 @@
 
     <div id="marca">
         <?php
-//        echo form_error('selMarca', '<p style=color:red>', '</p>');
-
-//        $value = '';
-//        if(!is_null($vehiculo)) $value = $vehiculo['MATRICULA'];
-//        if(!empty(validation_errors())) $value = set_value('selMarca');
-
         $opciones = array(
             $vehiculo['PK_ID_VEHICULO'] => $vehiculo['MARCA'],
         );
-
-//        TODO: change to marcas
-//        foreach($categorias as $index => $categoria) {
-//            $opciones[$categoria['PK_ID_CATEGORIA']] = $categoria['MARCA'];
-//        }
 
         $opciones_atributos = array(
             'id' => 'selMarca',
@@ -71,47 +68,40 @@
 
 	<div id="modelo">
 		<?php
-//		echo form_error('txPrecio', '<p style=color:red>', '</p>');
-
-//		$value = '';
-//		if(!is_null($vehiculo)) $value = $vehiculo['MODELO'];
-//		if(!empty(validation_errors())) $value = set_value('txPrecio');
-		$precio_attributes = array(
+		$atributos = array(
 			'name' => 'txModelo',
 			'id' => 'txModelo',
 			'class' => 'input',
-//			'placeholder' => !is_null($vehiculo) ? '' : 'Ingrese el precio',
 			'value' => $vehiculo['MODELO'],
             'readonly' => 'readonly'
 		);
 
 		echo form_label('Modelo ', 'txModelo');
-		echo form_input($precio_attributes);
+		echo form_input($atributos);
 		?>
 	</div>
 	<br>
 
     <div id="ubicacion">
         <?php
-//		echo form_error('txPrecio', '<p style=color:red>', '</p>');
-
-//		$value = '';
-//		if(!is_null($vehiculo)) $value = $vehiculo['MODELO'];
-//		if(!empty(validation_errors())) $value = set_value('txPrecio');
-        $precio_attributes = array(
+        $atributos = array(
             'name' => 'txUbicacion',
             'id' => 'txUbicacion',
             'class' => 'input',
-//            'placeholder' => !is_null($vehiculo) ? '' : 'Ingrese el precio',
             'value' => $vehiculo['UBICACION'],
             'readonly' => 'readonly'
         );
 
         echo form_label('Ubicacion ', 'txUbicacion');
-        echo form_input($precio_attributes);
+        echo form_input($atributos);
         ?>
     </div>
     <br>
+
+    <div id="foto_vehiculo">
+        <?php if (!is_null($vehiculo) && !is_null($vehiculo['RENOMBRADO'])) ?>
+            <img style="max-width: 500px; max-height: 500px" src=<?= '/codeigniter/imagenes/vehiculos/' . $vehiculo['RENOMBRADO'] ?>>
+    </div>
 
     <div id="reservas">
         <h3>Reservas del vehículo</h3>
@@ -132,6 +122,7 @@
         endif;
         ?>
         <br>
+        <br>
         <button type="button" onclick="window.location.href='<?=site_url('/zona_publica/reserva/index/' . $vehiculo['PK_ID_VEHICULO'])?>'">Nueva Reserva</button>
     </div>
     <br>
@@ -150,34 +141,6 @@
 	</div>
 	<?= form_close(); ?>
 </div>
-
-
-    <?php //if(!is_null($producto)): ?>
-    <!--	<div id="eliminar">-->
-    <!--		--><?php
-    //		echo form_open('../productos/eliminar');
-    //		$submit_attributes = array(
-    //			'name' => 'intId',
-    //			'id' => 'intId',
-    //			'class' => 'input',
-    //			'value' => is_null($producto) ? 0 : (int)$producto['PK_ID_PRODUCTO'],
-    //			'readonly' => 'readonly',
-    //			'style' => 'display: none;'
-    //		);
-    //		echo form_input($submit_attributes);
-    //
-    //		$submit_attributes = array(
-    //			'name' => 'btEliminar',
-    //			'id' => 'btEliminar',
-    //			'class' => 'submit',
-    //			'value' => 'Eliminar',
-    //		);
-    //		echo form_submit($submit_attributes);
-    //		echo form_close()
-    //		?>
-    <!--	</div>-->
-    <!--	<br><br>-->
-    <?php //endif; ?>
-
-
+</body>
+</html>
 

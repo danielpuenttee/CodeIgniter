@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <head>
 	<meta charset="utf-8" />
-	<title>Plataforma</title>
+	<title>Login</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
 </head>
 <body>
-	<h1>Plataforma - Zona privada</h1>
+	<h1>Talleres Guzmán S.L. - Zona privada</h1>
 	<h3>Login</h3>
 	<?php echo form_open(site_url('zona_privada/administrador/login'), array('class'=>'', 'name' => 'form_ficha', 'id' => 'form_ficha')); ?>
 	<div class="div_login">
@@ -24,17 +24,20 @@
 			<?}
 		}
 		?>
-		<? // Fin errores de validación controlados en PHP (por Codeigniter o por nosotros (errores propios)) ?>
 		<div class="form-group">
 			<input class="form-control" type="text" placeholder="Email" name="txUsername" value="<?=set_value('txUsername', '')?>" id="txUsername">
 		</div>
 		<div class="form-group">
 			<input class="form-control" type="password" placeholder="Contraseña" name="txPassword" id="txPassword">
 		</div>
+        <br>
 		<div class="form-action">
 			<button name="btAcceder" id="btAcceder" class="btn btn-focus" type="submit">Acceder</button>
 		</div>
 	</div>
 	<? echo form_close();?>
+    <br>
+    <br>
+    <button onclick="window.location.href='<?=site_url( 'zona_publica/listado/index')?>'">Volver al listado de vehículos</button>
 </body>
 </html>

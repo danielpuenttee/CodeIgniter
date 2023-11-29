@@ -1,7 +1,7 @@
 <?php
 if (!defined('BASEPATH')) exit('No direct script access allowed');
 
-class Usuario_model extends CI_model{
+class ZonaPublica_model extends CI_model{
 
     public function __construct()
     {
@@ -20,19 +20,25 @@ class Usuario_model extends CI_model{
     }
 
     public function get_vehiculos($limit, $start, $filtros){
+        $this->db->join('FOTO', 'FOTO.FK_ID_VEHICULO = VEHICULO.PK_ID_VEHICULO', 'left');
+
         $this->db->like('MARCA', $filtros['MARCA']);
         $this->db->like('MODELO', $filtros['MODELO']);
         $this->db->like('MATRICULA', $filtros['MATRICULA']);
+        $this->db->like('UBICACION', $filtros['UBICACION']);
 
         $this->db->limit($limit, $start);
         $this->db->order_by($filtros['ORDER_BY'], $filtros['ORDER_DIR']);
 
+        $this->db->select('VEHICULO.*, FOTO.RENOMBRADO');
         return $this->db->get("VEHICULO")->result_array();
     }
 
     public function vehiculo_por_id(int $id_producto)
     {
+        $this->db->join('FOTO', 'FOTO.FK_ID_VEHICULO = VEHICULO.PK_ID_VEHICULO', 'left');
         $this->db->where('VEHICULO.PK_ID_VEHICULO', $id_producto);
+        $this->db->select('VEHICULO.*, FOTO.RENOMBRADO');
         return $this->db->get('VEHICULO')->row_array();
     }
 

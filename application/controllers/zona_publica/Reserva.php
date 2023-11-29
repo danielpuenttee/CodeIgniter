@@ -7,7 +7,7 @@ class Reserva extends CI_Controller {
     {
         parent::__construct();
 
-        $this->load->model("Usuario_model");
+        $this->load->model("ZonaPublica_model");
 
         $this->load->helper("form");
         $this->load->helper('url');
@@ -21,13 +21,17 @@ class Reserva extends CI_Controller {
         if(!isset($_SESSION)) session_start();
     }
 
-    public function index(int $id_vehiculo, $errores = array('validation_errors' => array('fecha' => '')))
+    public function index(int $id_vehiculo, $errores = array('validation_errors' => array('fecha' => ''))) {
+        self::reserva($id_vehiculo, $errores);
+    }
+
+    public function reserva(int $id_vehiculo, $errores = array('validation_errors' => array('fecha' => '')))
     {
-        $vehiculo = $this->Usuario_model->vehiculo_por_id($id_vehiculo);
+        $vehiculo = $this->ZonaPublica_model->vehiculo_por_id($id_vehiculo);
         if(empty($vehiculo)) http_response_code(404);
 
-        $reservas = $this->Usuario_model->get_reservas($id_vehiculo);
-        $empleados_raw = $this->Usuario_model->get_empleados($id_vehiculo);
+        $reservas = $this->ZonaPublica_model->get_reservas($id_vehiculo);
+        $empleados_raw = $this->ZonaPublica_model->get_empleados($id_vehiculo);
 
         $empleados = array('' => '-');
         foreach($empleados_raw as $empleado) {
@@ -52,14 +56,14 @@ class Reserva extends CI_Controller {
         $desde = strtotime($this->input->post('dtDesde'));
         $hasta = strtotime($this->input->post('dtHasta'));
 
-        $resto_fechas = $this->Usuario_model->get_fechas($id_vehiculo);
+        $resto_fechas = $this->ZonaPublica_model->get_fechas($id_vehiculo);
         $fecha_valida = $this->chequear_fecha($desde, $hasta, $resto_fechas);
 
         if($this->form_validation->run()) {
             $id_empleado = (int)$this->input->post('selEmpleado');
 
             if ($fecha_valida) {
-                $this->Usuario_model->guardar_reserva(array(
+                $this->ZonaPublica_model->guardar_reserva(array(
                     'FK_ID_VEHICULO' => $id_vehiculo,
                     'DESDE' => date('y-m-d H:i:s', $desde),
                     'HASTA' => date('y-m-d H:i:s', $hasta),
@@ -67,7 +71,7 @@ class Reserva extends CI_Controller {
                     'FK_ESTADO' => 1,
                 ));
 
-                header('Location: ../ficha/index/' . $id_vehiculo);
+                header('Location: ../ficha/ficha/' . $id_vehiculo);
                 exit();
             }
         }
@@ -76,6 +80,7 @@ class Reserva extends CI_Controller {
 
     public function chequear_fecha($desde, $hasta, $resto_fechas)
     {
+
         if($desde >= $hasta) {
             $this->data['validation_errors']['fecha'] = "La fecha de inicio no puede ser mayor que la de final";
             return false;
@@ -92,5 +97,4 @@ class Reserva extends CI_Controller {
         $this->data['validation_errors']['fecha'] = "";
         return true;
     }
-
 }

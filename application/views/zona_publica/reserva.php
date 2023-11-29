@@ -1,11 +1,24 @@
-<h2>Nueva reserva - <?= $vehiculo['MATRICULA'] ?></h2>
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Reserva publica de vehiculo</title>
+    <meta name="description" content="Latest updates and statistic charts">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
+</head>
+
+<body>
+<div id="titulo">
+    <h1>Talleres Guzmán S.L.</h1>
+    <h2>Ficha del Vehiculo <?= $vehiculo['MATRICULA'] ?></h2>
+</div>
 
 <div id="ficha">
     <?= form_open('zona_publica/reserva/guardar'); ?>
 
     <div id="id">
         <?php
-        $submit_attributes = array(
+        $atributos = array(
             'name' => 'intId',
             'id' => 'intId',
             'class' => 'input',
@@ -13,13 +26,13 @@
             'readonly' => 'readonly',
             'style' => 'display: none;'
         );
-        echo form_input($submit_attributes);
+        echo form_input($atributos);
         ?>
     </div>
 
     <div id="matricula">
         <?php
-        $marca_attributes = array(
+        $matricula_attributes = array(
             'name' => 'txMatricula',
             'id' => 'txMatricula',
             'class' => 'input',
@@ -28,7 +41,7 @@
         );
 
         echo form_label('Matricula ', 'txMatricula');
-        echo form_input($marca_attributes);
+        echo form_input($matricula_attributes);
         ?>
     </div>
     <br>
@@ -55,7 +68,7 @@
 
     <div id="modelo">
         <?php
-        $precio_attributes = array(
+        $atributos = array(
             'name' => 'txModelo',
             'id' => 'txModelo',
             'class' => 'input',
@@ -64,14 +77,14 @@
         );
 
         echo form_label('Modelo ', 'txModelo');
-        echo form_input($precio_attributes);
+        echo form_input($atributos);
         ?>
     </div>
     <br>
 
     <div id="ubicacion">
         <?php
-        $precio_attributes = array(
+        $atributos = array(
             'name' => 'txUbicacion',
             'id' => 'txUbicacion',
             'class' => 'input',
@@ -80,7 +93,7 @@
         );
 
         echo form_label('Ubicacion ', 'txUbicacion');
-        echo form_input($precio_attributes);
+        echo form_input($atributos);
         ?>
     </div>
     <br>
@@ -104,14 +117,17 @@
         <br>
 
         <div id="desde">
-            <?php if (isset($validation_errors['fecha'])) ?><p style="color: red"> <?= $validation_errors['fecha']; ?> </p>
+            <?php if (isset($validation_errors['fecha'])) ?><span style="color: red"> <?= $validation_errors['fecha']; ?> </span>
+
             <?php
+            form_error('dtDesde', '<span style=color:red>', '</p>');
+
             $atributos = array(
                 'name' => 'dtDesde',
                 'id' => 'dtDesde',
                 'type' => 'datetime-local',
                 'value' => set_value('dtDesde'),
-                'required' => 'required', // Puedes agregar 'required' si la fecha es obligatoria
+                'required' => 'required'
             );
             echo form_label('Desde ', 'dtDesde');
             echo form_input($atributos);
@@ -120,14 +136,14 @@
         <br>
         <div id="hasta">
             <?php
-            echo form_error('dtHasta', '<p style=color:red>', '</p>');
+            echo form_error('dtHasta', '<span style=color:red>', '</p>');
 
             $atributos = array(
                 'name' => 'dtHasta',
                 'id' => 'dtHasta',
                 'type' => 'datetime-local',
                 'value' => set_value('dtHasta'),
-                'required' => 'required', // Puedes agregar 'required' si la fecha es obligatoria
+                'required' => 'required'
             );
             echo form_label('Hasta ', 'dtHasta');
             echo form_input($atributos);
@@ -136,7 +152,6 @@
 
     </div>
     <br>
-
 
     <div id="botones">
         <button type="button" onclick="window.location.href='<?=site_url('/zona_publica/ficha/index/' . $vehiculo['PK_ID_VEHICULO'])?>'">Volver</button>
@@ -152,4 +167,5 @@
     </div>
     <?= form_close(); ?>
 </div>
-
+</body>
+</html>

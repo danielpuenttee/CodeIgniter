@@ -12,16 +12,23 @@ class Administrador_Controller extends MY_Controller
 
 		// Cargo librerías comunes necesarias en la zona privada
 		$this->load->library('session');
-		$this->load->helper('string');
-		$this->load->helper('language');
-		$this->load->model('Administrador_model');
-		$this->load->helper('date');
-		$this->load->library('table');
-		$this->load->library('pagination');
-		$this->load->helper('form');
-		$this->load->helper('url');
+        $this->load->library('table');
+        $this->load->library('pagination');
+        $this->load->library('form_validation');
 
-		// Establezco valores iniciales por defecto
+        $this->load->helper('string');
+        $this->load->helper('language');
+        $this->load->helper('form');
+        $this->load->helper('date');
+        $this->load->helper('url');
+        $this->load->helper('string_helper');
+
+        $this->load->model('Administrador_model');
+        $this->load->model('ZonaPrivada_model');
+        $this->load->model("ZonaPublica_model");
+
+
+        // Establezco valores iniciales por defecto
 		$this->data = array();
 		$this->data['administrador'] = $this->administrador;
 

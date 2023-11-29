@@ -15,6 +15,8 @@ class Administrador extends Administrador_Controller
 	 */
 	public function login()
 	{
+        $this->session->unset_userdata('FILTROS_PUBLICO');
+
 		$this->load->library('form_validation');
 		$this->load->helper('form');
 
@@ -65,7 +67,10 @@ class Administrador extends Administrador_Controller
 	 */
 	public function logout()
 	{
-		$this->session->unset_userdata('administrador');
+        $this->session->unset_userdata('FILTROS_EMPLEADOS');
+        $this->session->unset_userdata('FILTROS_PRIVADO');
+
+        $this->session->unset_userdata('administrador');
 		header("Location:" . site_url(RUTA_ADMINISTRACION . '/administrador/login'));
 		exit;
 	}
