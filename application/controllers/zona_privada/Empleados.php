@@ -61,7 +61,7 @@ class Empleados extends Administrador_Controller
             $empleado['IDENTIFICADOR'] = anchor(site_url(RUTA_ADMINISTRACION . '/empleados/ficha/' . $empleado['PK_ID_EMPLEADO']), $empleado['IDENTIFICADOR']);
             $empleado['NOMBRE'] = anchor(site_url(RUTA_ADMINISTRACION . '/empleados/ficha/' . $empleado['PK_ID_EMPLEADO']), $empleado['NOMBRE']);
             $empleado['APELLIDOS'] = anchor(site_url(RUTA_ADMINISTRACION . '/empleados/ficha/' . $empleado['PK_ID_EMPLEADO']), $empleado['APELLIDOS']);
-            $empleado['FECHA_NACIMIENTO'] = anchor(site_url(RUTA_ADMINISTRACION . '/empleados/ficha/' . $empleado['PK_ID_EMPLEADO']), alt_text($empleado['FECHA_NACIMIENTO']));
+            $empleado['FECHA_NACIMIENTO'] = anchor(site_url(RUTA_ADMINISTRACION . '/empleados/ficha/' . $empleado['PK_ID_EMPLEADO']), alt_text(date('d/m/Y', strtotime($empleado['FECHA_NACIMIENTO']))));
 
             unset($empleado['PK_ID_EMPLEADO']);
         }
