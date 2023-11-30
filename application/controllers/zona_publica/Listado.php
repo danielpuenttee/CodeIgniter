@@ -128,6 +128,8 @@ class Listado extends CI_Controller {
             'ORDER_BY' => 'MARCA',
             'ORDER_DIR' => 'ASC'
         );
+        $this->session->PROD_PAGINA = VEHICULOS_POR_PAGINA;
+
         $this->listado();
     }
 }

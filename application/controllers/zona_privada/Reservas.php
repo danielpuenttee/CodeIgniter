@@ -182,6 +182,7 @@ class Reservas extends Administrador_Controller {
             'ORDER_BY' => 'PK_ID_RESERVA',
             'ORDER_DIR' => 'ASC'
         );
+        $this->session->PROD_PAGINA = VEHICULOS_POR_PAGINA;
 
         $this->listado();
     }

@@ -15,6 +15,7 @@ class ZonaPublica_model extends CI_model{
         $this->db->like('MARCA', $filtros['MARCA']);
         $this->db->like('MODELO', $filtros['MODELO']);
         $this->db->like('MATRICULA', $filtros['MATRICULA']);
+        $this->db->like('UBICACION', $filtros['UBICACION']);
 
         return $this->db->count_all_results();
     }

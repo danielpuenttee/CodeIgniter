@@ -104,6 +104,8 @@ class Empleados extends Administrador_Controller
             'ORDER_BY' => 'NOMBRE',
             'ORDER_DIR' => 'ASC'
         );
+        $this->session->PROD_PAGINA = VEHICULOS_POR_PAGINA;
+
         $this->index();
     }
 
